@@ -409,6 +409,10 @@ void loadTextAndBuildGraph(const string& filename, Graph& g) {
     }
 }
 
+void printSomething() {
+    cout << "Hello, this is a test function!" << endl;
+}
+
 int main() {
     string filepath = "d:/2025Junior/SoftwareEngineering/lab1/"; // 默认文件路径
     cout << "请输入文本文件名：";
@@ -462,6 +466,9 @@ int main() {
 
     // 保存到文件（可选）
     g.saveWalkToFile("random_walk.txt");
+
+    // 测试函数
+    printSomething();
 
     return 0;
 }
