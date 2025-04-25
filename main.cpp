@@ -240,65 +240,6 @@ public:
         return ss.str();
     }
 
-    double calPageRank_Deepseek(const string& word) const {
-        if (adjList.find(word) == adjList.end()) {
-            return -1.0; // 单词不存在
-        }
-
-        const double d = 0.85;
-        const int maxIterations = 1000;
-        const double epsilon = 1e-8;
-
-        vector<string> nodes;
-        for (const auto& pair : adjList) {
-            nodes.push_back(pair.first);
-        }
-        int N = nodes.size();
-        if (N == 0) return 0.0;
-
-        unordered_map<string, double> prCurrent, prNext;
-        for (const auto& node : nodes) {
-            prCurrent[node] = 1.0 / N;
-        }
-
-        for (int iter = 0; iter < maxIterations; ++iter) {
-            // 计算所有悬挂节点的PR总和
-            double danglingSum = 0.0;
-            for (const auto& node : nodes) {
-                if (adjList.at(node).empty()) {
-                    danglingSum += prCurrent[node];
-                }
-            }
-            danglingSum /= N; // 均分给所有节点
-
-            for (const auto& u : nodes) {
-                double sum = 0.0;
-                // 处理入边节点的贡献
-                if (inEdges.find(u) != inEdges.end()) {
-                    for (const string& v : inEdges.at(u)) {
-                        int Lv = adjList.at(v).size();
-                        if (Lv > 0) {
-                            sum += prCurrent[v] / Lv;
-                        }
-                    }
-                }
-                // 添加悬挂节点的贡献
-                sum += danglingSum;
-                prNext[u] = (1.0 - d)/N + d * sum;
-            }
-
-            // 检查收敛
-            double maxDiff = 0.0;
-            for (const auto& node : nodes) {
-                maxDiff = max(maxDiff, abs(prNext[node] - prCurrent[node]));
-            }
-            if (maxDiff < epsilon) break;
-
-            prCurrent = prNext;
-        }
-
-        return prCurrent.at(word);
-    }
 
     double calPageRank_Chatgpt(const string& word) const {
         const double d = 0.85;           // 阻尼系数
@@ -508,12 +449,10 @@ int main() {
     cout << "\n请输入要查询 PageRank 的单词：";
     cin >> queryWord;
 
-    double pr = g.calPageRank_Deepseek(queryWord);
     double prVal = g.calPageRank_Chatgpt(queryWord);
-    if (pr < 0) {
+    if (prVal < 0) {
         cout << "单词 \"" << queryWord << "\" 不在图中！" << endl;
     } else {
-        cout << "Deepseek生成代码计算的PageRank值为：" << pr << endl;
         cout << "Chatgpt生成代码计算的PageRank值为：" << prVal << endl;
     }
 
