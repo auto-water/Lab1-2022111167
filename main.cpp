@@ -456,12 +456,7 @@ int main() {
         cout << "Chatgpt生成代码计算的PageRank值为：" << prVal << endl;
     }
 
-    // 随机游走功能
-    string walkResult = g.randomWalk();
-    cout << "\n随机游走路径：\n" << walkResult << endl;
-
-    // 保存到文件（可选）
-    g.saveWalkToFile("random_walk.txt");
+    cout<<"Modify from C4"<<endl;
 
     cout<<"Add a sentense~"<<endl;
 
