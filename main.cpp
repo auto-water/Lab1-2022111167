@@ -463,5 +463,7 @@ int main() {
     // 保存到文件（可选）
     g.saveWalkToFile("random_walk.txt");
 
+    cout<<"Add a sentense~"<<endl;
+
     return 0;
 }
