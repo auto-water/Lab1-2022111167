@@ -243,24 +243,31 @@ public:
 
     double calPageRank_Chatgpt(const string& word) const {
         const double d = 0.85;           // 阻尼系数
-        const int max_iter = 100;        // 最大迭代次数
-        const double epsilon = 1e-6;     // 收敛阈值
+        const int max_iter = 1000;      // 最大迭代次数
+        const double epsilon = 1e-6;    // 收敛阈值
 
-        // 所有节点初始化 PR 值为 1.0
-        unordered_map<string, double> pr;
+        // 获取所有节点集合（包括出边和入边节点）
+        unordered_map<string, unordered_map<string, int>> fullGraph = adjList;
         for (const auto& pair : adjList) {
-            pr[pair.first] = 1.0;
-            // 还要注意：被指向但没出边的节点也要加入
-            for (const auto& sub : pair.second) {
-                if (pr.find(sub.first) == pr.end()) {
-                    pr[sub.first] = 1.0;
+            for (const auto& edge : pair.second) {
+                if (fullGraph.find(edge.first) == fullGraph.end()) {
+                    fullGraph[edge.first] = unordered_map<string, int>();
                 }
             }
         }
 
-        // 预构建反向图：入边信息
+        int N = fullGraph.size(); // 节点数
+        if (N == 0) return 0.0;
+
+        // 初始化 PR 值均为 1/N
+        unordered_map<string, double> pr;
+        for (const auto& node : fullGraph) {
+            pr[node.first] = 1.0 / N;
+        }
+
+        // 构建入边表
         unordered_map<string, vector<string>> incoming;
-        for (const auto& from_pair : adjList) {
+        for (const auto& from_pair : fullGraph) {
             const string& u = from_pair.first;
             for (const auto& to_pair : from_pair.second) {
                 const string& v = to_pair.first;
@@ -268,32 +275,32 @@ public:
             }
         }
 
-        // 迭代
+        // 迭代计算
         for (int iter = 0; iter < max_iter; ++iter) {
             unordered_map<string, double> new_pr;
             double diff = 0.0;
 
-            for (const auto& node_pair : pr) {
+            for (const auto& node_pair : fullGraph) {
                 const string& node = node_pair.first;
                 double sum = 0.0;
 
                 if (incoming.find(node) != incoming.end()) {
                     for (const string& inNode : incoming[node]) {
-                        int out_deg = adjList.find(inNode) != adjList.end() ? adjList.at(inNode).size() : 0;
-                        if (out_deg > 0)
+                        int out_deg = fullGraph[inNode].size();
+                        if (out_deg > 0) {
                             sum += pr[inNode] / out_deg;
+                        }
                     }
                 }
 
-                new_pr[node] = (1.0 - d) + d * sum;
+                new_pr[node] = (1.0 - d) / N + d * sum;
                 diff += abs(new_pr[node] - pr[node]);
             }
 
             pr = new_pr;
-            if (diff < epsilon) break; // 提前收敛
+            if (diff < epsilon) break; // 收敛
         }
 
-        // 返回目标单词的 PR 值（如果存在）
         if (pr.find(word) != pr.end()) {
             return pr[word];
         } else {
@@ -301,6 +308,7 @@ public:
             return 0.0;
         }
     }
+
 
 
     string randomWalk() {
