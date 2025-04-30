@@ -12,34 +12,34 @@
 
 using namespace std;
 
-// ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½Í³Ò»Ð¡Ð´ + È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½Ö·ï¿½
+// ¹¤¾ßº¯Êý£ºÍ³Ò»Ð¡Ð´ + È¥µô·Ç×ÖÄ¸×Ö·û
 std::string cleanText(const std::string& text);
 
-// ï¿½Ö´Êºï¿½ï¿½ï¿½
+// ·Ö´Êº¯Êý
 std::vector<std::string> tokenize(const std::string& line);
 
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
+// ¶¨ÒåÓÐÏòÍ¼Àà
 class Graph {
 private:
     unordered_map<string, unordered_map<string, int>> adjList;
-    unordered_map<string, vector<string>> inEdges; // ï¿½æ´¢Ã¿ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½
-    vector<string> walkPath;          // ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
-    set<pair<string, string>> walkedEdges; // ï¿½æ´¢ï¿½ï¿½ï¿½ß¹ï¿½ï¿½Ä±ï¿½
+    unordered_map<string, vector<string>> inEdges; // ´æ´¢Ã¿¸ö½ÚµãµÄÈë±ß
+    vector<string> walkPath;          // ´æ´¢±éÀúÂ·¾¶
+    set<pair<string, string>> walkedEdges; // ´æ´¢ÒÑ×ß¹ýµÄ±ß
 
 public:
-    // ï¿½ï¿½ï¿½Ó±ï¿½ word1 -> word2
+    // Ìí¼Ó±ß word1 -> word2
     void addEdge(const string& word1, const string& word2) {
         adjList[word1][word2]++;
-        // È·ï¿½ï¿½word2ï¿½ï¿½Îªï¿½Úµï¿½ï¿½ï¿½ï¿½
+        // È·±£word2×÷Îª½Úµã´æÔÚ
         if (adjList.find(word2) == adjList.end()) {
             adjList[word2] = unordered_map<string, int>();
         }
-        // Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú½Ó±ï¿½
+        // Î¬»¤ÄæÏòÁÚ½Ó±í
         inEdges[word2].push_back(word1);
     }
 
-    // ï¿½ï¿½Ó¡Í¼ï¿½á¹¹ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ´òÓ¡Í¼½á¹¹£¨¸ñÊ½ÇåÎú£©
     void showGraph() const {
         cout << "Graph Structure:\n";
         for (auto it = adjList.begin(); it != adjList.end(); ++it) {
@@ -56,19 +56,19 @@ public:
     }
 
 
-    // ï¿½ï¿½È¡Í¼ï¿½Ó¿Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯Ê¹ï¿½ï¿½
+    // ¶ÁÈ¡Í¼½Ó¿Ú£¬¹©ºóÐø²éÑ¯Ê¹ÓÃ
     const unordered_map<string, unordered_map<string, int>>& getGraph() const {
         return adjList;
     }
 
-    // ï¿½Ð¶ï¿½Í¼ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ÅÐ¶ÏÍ¼ÖÐÊÇ·ñ°üº¬Ä³¸öµ¥´Ê
     bool contains(const string& word) const {
         return adjList.find(word) != adjList.end();
     }
 
-    // ï¿½ï¿½Ñ¯ bridge wordsï¿½ï¿½word1 -> word3 -> word2
+    // ²éÑ¯ bridge words£ºword1 -> word3 -> word2
     string queryBridgeWords(const string& word1, const string& word2) const {
-        // 1. ï¿½Ð¶ï¿½ word1 ï¿½ï¿½ word2 ï¿½Ç·ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
+        // 1. ÅÐ¶Ï word1 ºÍ word2 ÊÇ·ñÔÚÍ¼ÖÐ
         bool hasWord1 = (adjList.find(word1) != adjList.end());
         bool hasWord2 = false;
 
@@ -89,13 +89,13 @@ public:
         else if (!hasWord2)
             return "No \"" + word2 + "\" in the graph!";
 
-        // 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ word1 -> mid -> word2 ï¿½ï¿½ï¿½ï¿½ï¿½
+        // 2. ËÑË÷ËùÓÐ word1 -> mid -> word2 µÄÇé¿ö
         vector<string> bridges;
 
         const unordered_map<string, int>& neighbors = adjList.at(word1);
         for (const auto& pair : neighbors) {
             const string& mid = pair.first;
-            // ï¿½ï¿½ï¿½ mid ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ word2ï¿½ï¿½ï¿½ï¿½ï¿½ÇºÏ·ï¿½ï¿½Å½Ó´ï¿½
+            // Èç¹û mid ÓÐÒ»Ìõ±ßÖ¸Ïò word2£¬ÔòÊÇºÏ·¨ÇÅ½Ó´Ê
             if (adjList.find(mid) != adjList.end()) {
                 if (adjList.at(mid).find(word2) != adjList.at(mid).end()) {
                     bridges.push_back(mid);
@@ -103,7 +103,7 @@ public:
             }
         }
 
-        // 3. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // 3. Êä³ö½á¹û
         if (bridges.empty()) {
             return "No bridge words from \"" + word1 + "\" to \"" + word2 + "\"!";
         } else {
@@ -119,7 +119,7 @@ public:
     }
 
     string generateNewText(const string& inputText) const {
-        string cleaned = cleanText(inputText); // Ê¹ï¿½ï¿½Ö®Ç°Ð´ï¿½Ä¹ï¿½ï¿½ßºï¿½ï¿½ï¿½
+        string cleaned = cleanText(inputText); // Ê¹ÓÃÖ®Ç°Ð´µÄ¹¤¾ßº¯Êý
         vector<string> words = tokenize(cleaned);
 
         if (words.size() < 2) return inputText;
@@ -129,10 +129,10 @@ public:
             string word1 = words[i];
             string word2 = words[i + 1];
 
-            // ï¿½ï¿½ï¿½Óµï¿½Ò»ï¿½ï¿½ï¿½ï¿½
+            // Ìí¼ÓµÚÒ»¸ö´Ê
             result += word1;
 
-            // ï¿½ï¿½Ñ¯ï¿½Å½Ó´ï¿½ï¿½Ð±ï¿½
+            // ²éÑ¯ÇÅ½Ó´ÊÁÐ±í
             vector<string> bridges;
 
             if (adjList.find(word1) != adjList.end()) {
@@ -146,17 +146,17 @@ public:
                 }
             }
 
-            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å½Ó´Ê£ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Èç¹ûÓÐÇÅ½Ó´Ê£¬Ëæ»úÑ¡ÔñÒ»¸ö²åÈë
             if (!bridges.empty()) {
                 int idx = rand() % bridges.size();
                 result += " " + bridges[idx];
             }
 
-            // ï¿½ï¿½ï¿½ÓµÚ¶ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Ä¿Õ¸ï¿½
+            // Ìí¼ÓµÚ¶þ¸ö´ÊÇ°µÄ¿Õ¸ñ
             result += " ";
         }
 
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
+        // Ìí¼Ó×îºóÒ»¸ö´Ê
         result += words.back();
 
         return result;
@@ -170,19 +170,19 @@ public:
             return "No \"" + end + "\" in the graph!";
         }
 
-        // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½
+        // ³õÊ¼»¯×î¶Ì¾àÀë±í£¬Ç°Çý±í
         unordered_map<string, int> dist;
         unordered_map<string, string> prev;
         set<string> visited;
 
-        // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // ³õÊ¼»¯£ºËùÓÐ½Úµã×î´ó¾àÀë
         for (const auto& pair : adjList) {
             dist[pair.first] = INT_MAX;
         }
         dist[start] = 0;
 
         while (true) {
-            // ï¿½Òµï¿½ï¿½ï¿½Ç°Î´ï¿½ï¿½ï¿½Ê¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½Ä½Úµï¿½
+            // ÕÒµ½µ±Ç°Î´·ÃÎÊ¡¢¾àÀë×îÐ¡µÄ½Úµã
             string u;
             int minDist = INT_MAX;
             for (const auto& pair : dist) {
@@ -192,12 +192,12 @@ public:
                 }
             }
 
-            // Ã»ï¿½Òµï¿½ï¿½ï¿½ï¿½Å½Úµã£¬Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ã»ÕÒµ½¸üÓÅ½Úµã£¬ËµÃ÷½áÊø
             if (minDist == INT_MAX) break;
 
             visited.insert(u);
 
-            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¾Ó£ï¿½ï¿½ï¿½ï¿½Â¾ï¿½ï¿½ï¿½
+            // ±éÀúËùÓÐÁÚ¾Ó£¬¸üÐÂ¾àÀë
             if (adjList.find(u) != adjList.end()) {
                 const unordered_map<string, int>& neighbors = adjList.at(u);
                 for (const auto& neighbor : neighbors) {
@@ -213,12 +213,12 @@ public:
 
         }
 
-        // ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Úµï¿½
+        // ÎÞ·¨µ½´ïÄ¿±ê½Úµã
         if (dist[end] == INT_MAX) {
             return "No path from \"" + start + "\" to \"" + end + "\"!";
         }
 
-        // ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
+        // »ØËÝÂ·¾¶
         vector<string> path;
         string current = end;
         while (current != start) {
@@ -228,7 +228,7 @@ public:
         path.push_back(start);
         reverse(path.begin(), path.end());
 
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // ¹¹ÔìÊä³ö
         stringstream ss;
         ss << "Shortest path from \"" << start << "\" to \"" << end << "\":\n";
         for (size_t i = 0; i < path.size(); ++i) {
@@ -242,15 +242,15 @@ public:
 
 
     double calPageRank_Chatgpt(const string& word) const {
-        const double d = 0.85;           // ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
-        const int max_iter = 100;        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-        const double epsilon = 1e-6;     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+        const double d = 0.85;           // ×èÄáÏµÊý
+        const int max_iter = 100;        // ×î´óµü´ú´ÎÊý
+        const double epsilon = 1e-6;     // ÊÕÁ²ãÐÖµ
 
-        // ï¿½ï¿½ï¿½Ð½Úµï¿½ï¿½Ê¼ï¿½ï¿½ PR ÖµÎª 1.0
+        // ËùÓÐ½Úµã³õÊ¼»¯ PR ÖµÎª 1.0
         unordered_map<string, double> pr;
         for (const auto& pair : adjList) {
             pr[pair.first] = 1.0;
-            // ï¿½ï¿½Òª×¢ï¿½â£ºï¿½ï¿½Ö¸ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ßµÄ½Úµï¿½Ò²Òªï¿½ï¿½ï¿½ï¿½
+            // »¹Òª×¢Òâ£º±»Ö¸Ïòµ«Ã»³ö±ßµÄ½ÚµãÒ²Òª¼ÓÈë
             for (const auto& sub : pair.second) {
                 if (pr.find(sub.first) == pr.end()) {
                     pr[sub.first] = 1.0;
@@ -258,7 +258,7 @@ public:
             }
         }
 
-        // Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+        // Ô¤¹¹½¨·´ÏòÍ¼£ºÈë±ßÐÅÏ¢
         unordered_map<string, vector<string>> incoming;
         for (const auto& from_pair : adjList) {
             const string& u = from_pair.first;
@@ -268,7 +268,7 @@ public:
             }
         }
 
-        // ï¿½ï¿½ï¿½ï¿½
+        // µü´ú
         for (int iter = 0; iter < max_iter; ++iter) {
             unordered_map<string, double> new_pr;
             double diff = 0.0;
@@ -290,10 +290,10 @@ public:
             }
 
             pr = new_pr;
-            if (diff < epsilon) break; // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½
+            if (diff < epsilon) break; // ÌáÇ°ÊÕÁ²
         }
 
-        // ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½êµ¥ï¿½Êµï¿½ PR Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½
+        // ·µ»ØÄ¿±êµ¥´ÊµÄ PR Öµ£¨Èç¹û´æÔÚ£©
         if (pr.find(word) != pr.end()) {
             return pr[word];
         } else {
@@ -309,11 +309,11 @@ public:
 
         if (adjList.empty()) return "";
 
-        // Ê¹ï¿½Ã¸ß¾ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½È·ï¿½ï¿½Ã¿ï¿½Îµï¿½ï¿½Ã²ï¿½Í¬ï¿½ï¿½
+        // Ê¹ÓÃ¸ß¾«¶ÈÊ±¼ä´Á×÷ÎªËæ»úÖÖ×Ó£¨È·±£Ã¿´Îµ÷ÓÃ²»Í¬£©
         unsigned seed = chrono::system_clock::now().time_since_epoch().count();
-        static std::mt19937 gen(seed); // ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½æ£¬ï¿½ï¿½Ã¿ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è¶¨ï¿½ï¿½ï¿½ï¿½
+        static std::mt19937 gen(seed); // ¾²Ì¬ÒýÇæ£¬µ«Ã¿´Îµ÷ÓÃÖØÐÂÉè¶¨ÖÖ×Ó
 
-        // ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½Úµï¿½
+        // Ëæ»úÑ¡ÔñÆðÊ¼½Úµã
         vector<string> nodes;
         for (const auto& pair : adjList) nodes.push_back(pair.first);
         std::uniform_int_distribution<int> dis(0, nodes.size()-1);
@@ -328,7 +328,7 @@ public:
                 candidates.push_back(edge.first);
             }
 
-            // Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É·Ö²ï¿½ï¿½ï¿½ï¿½ó£¨±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½
+            // Ã¿´ÎÖØÐÂÉú³É·Ö²¼¶ÔÏó£¨±ÜÃâ²ÐÁô×´Ì¬£©
             std::uniform_int_distribution<int> edge_dis(0, candidates.size()-1);
             string next = candidates[edge_dis(gen)];
 
@@ -352,7 +352,7 @@ public:
     void saveWalkToFile(const string& filename) {
         ofstream outfile(filename);
         if (!outfile) {
-            cerr << "ï¿½Þ·ï¿½Ð´ï¿½ï¿½ï¿½Ä¼ï¿½: " << filename << endl;
+            cerr << "ÎÞ·¨Ð´ÈëÎÄ¼þ: " << filename << endl;
             return;
         }
         for (const auto& word : walkPath) {
@@ -362,7 +362,7 @@ public:
     }
 };
 
-// ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½Í³Ò»Ð¡Ð´ + È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½Ö·ï¿½
+// ¹¤¾ßº¯Êý£ºÍ³Ò»Ð¡Ð´ + È¥µô·Ç×ÖÄ¸×Ö·û
 string cleanText(const string& text) {
     string result;
     for (char c : text) {
@@ -371,13 +371,13 @@ string cleanText(const string& text) {
         } else if (isspace(c)) {
             result += ' ';
         } else {
-            result += ' '; // ï¿½ï¿½ï¿½ï¿½ï¿½×ªÎªï¿½Õ¸ï¿½
+            result += ' '; // ½«±êµã×ªÎª¿Õ¸ñ
         }
     }
     return result;
 }
 
-// ï¿½Ö´Êºï¿½ï¿½ï¿½
+// ·Ö´Êº¯Êý
 vector<string> tokenize(const string& line) {
     vector<string> tokens;
     stringstream ss(line);
@@ -388,7 +388,7 @@ vector<string> tokenize(const string& line) {
     return tokens;
 }
 
-// ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½á¹¹
+// ´ÓÎÄ¼þ¶ÁÈ¡£¬Éú³ÉÍ¼½á¹¹
 void loadTextAndBuildGraph(const string& filename, Graph& g) {
     ifstream infile(filename);
     if (!infile) {
@@ -409,56 +409,66 @@ void loadTextAndBuildGraph(const string& filename, Graph& g) {
     }
 }
 
+void printSomething() {
+    cout << "Hello, this is a test function!" << endl;
+}
+
 int main() {
-    string filepath = "d:/2025Junior/SoftwareEngineering/lab1/"; // Ä¬ï¿½ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½
-    cout << "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½";
+    string filepath = "d:/2025Junior/SoftwareEngineering/lab1/"; // Ä¬ÈÏÎÄ¼þÂ·¾¶
+    cout << "ÇëÊäÈëÎÄ±¾ÎÄ¼þÃû£º";
     string filename;
     cin >> filename;
     string path = filepath + filename;
     Graph g;
     loadTextAndBuildGraph(path, g);
 
-    cout << "\n=== Õ¹Ê¾ï¿½ï¿½ï¿½Éµï¿½ï¿½ï¿½ï¿½ï¿½Í¼ ===\n";
+    cout << "\n=== Õ¹Ê¾Éú³ÉµÄÓÐÏòÍ¼ ===\n";
     g.showGraph();
 
     string w1, w2;
-    cout << "\nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¢ï¿½Äµï¿½ï¿½ï¿½ï¿½Ô²ï¿½Ñ¯ï¿½Å½Ó´Ê£ï¿½";
+    cout << "\nÇëÊäÈëÁ½¸öÓ¢ÎÄµ¥´ÊÒÔ²éÑ¯ÇÅ½Ó´Ê£º";
     cin >> w1 >> w2;
 
     string bridgeInfo = g.queryBridgeWords(w1, w2);
     cout << bridgeInfo << endl;
 
-    srand(time(0)); // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+    srand(time(0)); // ³õÊ¼»¯Ëæ»úÖÖ×Ó£¬½öÐèµ÷ÓÃÒ»´Î
 
-    cin.ignore(); // ï¿½ï¿½ï¿½Ç°Ò»ï¿½ï¿½ cin ï¿½ï¿½ï¿½ï¿½
+    cin.ignore(); // Çå¿ÕÇ°Ò»´Î cin ²ÐÁô
     string userInput;
-    cout << "\nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ó¢ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½\n";
+    cout << "\nÇëÊäÈëÒ»ÐÐÓ¢ÎÄÎÄ±¾ÒÔ×Ô¶¯Éú³ÉÐÂÎÄ±¾£º\n";
     getline(cin, userInput);
 
     string newText = g.generateNewText(userInput);
-    cout << "\nï¿½ï¿½ï¿½Éµï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½Â£ï¿½\n" << newText << endl;
+    cout << "\nÉú³ÉµÄÐÂÎÄ±¾ÈçÏÂ£º\n" << newText << endl;
 
     string src, dst;
-    cout << "\nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õµãµ¥ï¿½ï¿½ï¿½Ô²ï¿½Ñ¯ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½";
+    cout << "\nÇëÊäÈëÆðµãºÍÖÕµãµ¥´ÊÒÔ²éÑ¯×î¶ÌÂ·¾¶£º";
     cin >> src >> dst;
 
     string pathInfo = g.calcShortestPath(src, dst);
     cout << pathInfo << endl;
 
     string queryWord;
-    cout << "\nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ñ¯ PageRank ï¿½Äµï¿½ï¿½Ê£ï¿½";
+    cout << "\nÇëÊäÈëÒª²éÑ¯ PageRank µÄµ¥´Ê£º";
     cin >> queryWord;
 
     double prVal = g.calPageRank_Chatgpt(queryWord);
     if (prVal < 0) {
-        cout << "ï¿½ï¿½ï¿½ï¿½ \"" << queryWord << "\" ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Ð£ï¿½" << endl;
+        cout << "µ¥´Ê \"" << queryWord << "\" ²»ÔÚÍ¼ÖÐ£¡" << endl;
     } else {
-        cout << "Chatgptï¿½ï¿½ï¿½É´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PageRankÖµÎªï¿½ï¿½" << prVal << endl;
+        cout << "ChatgptÉú³É´úÂë¼ÆËãµÄPageRankÖµÎª£º" << prVal << endl;
     }
 
-    cout<<"Modify from C4"<<endl;
+    // Ëæ»úÓÎ×ß¹¦ÄÜ
+    string walkResult = g.randomWalk();
+    cout << "\nËæ»úÓÎ×ßÂ·¾¶£º\n" << walkResult << endl;
 
-    cout<<"Add a sentense~"<<endl;
+    // ±£´æµ½ÎÄ¼þ£¨¿ÉÑ¡£©
+    g.saveWalkToFile("random_walk.txt");
 
-    return 114514;
+    // ²âÊÔº¯Êý
+    printSomething();
+
+    return 0;
 }
