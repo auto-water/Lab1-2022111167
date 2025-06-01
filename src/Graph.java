@@ -57,7 +57,8 @@ public class Graph {
         String joined = bridges.stream()
                 .map(s -> "\"" + s + "\"")
                 .collect(Collectors.joining(", "));
-        return String.format("The bridge words from \"%s\" to \"%s\" is: %s.", w1, w2, joined);
+        if (bridges.size()>1) return String.format("The bridge words from \"%s\" to \"%s\" are: %s.", w1, w2, joined);
+        else return String.format("The bridge words from \"%s\" to \"%s\" is: %s.", w1, w2, joined);
     }
 
     /** 基于桥接词生成新文本 */
