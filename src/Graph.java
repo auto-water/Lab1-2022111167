@@ -93,14 +93,17 @@ public class Graph {
 
     /** 计算最短路径（Dijkstra） */
     public String calcShortestPath(String start, String end) {
-        if (!adjList.containsKey(start)) return String.format("No \"%s\" in the graph!", start);
-        if (!adjList.containsKey(end))   return String.format("No \"%s\" in the graph!", end);
+        if (!adjList.containsKey(start))
+            return String.format("No \"%s\" in the graph!", start);
+        if (!adjList.containsKey(end))
+            return String.format("No \"%s\" in the graph!", end);
 
         Map<String, Integer> dist = new HashMap<>();
         Map<String, String> prev = new HashMap<>();
         Set<String> visited = new HashSet<>();
 
-        for (var node : adjList.keySet()) dist.put(node, Integer.MAX_VALUE);
+        for (var node : adjList.keySet())
+            dist.put(node, Integer.MAX_VALUE);
         dist.put(start, 0);
 
         while (true) {
@@ -133,7 +136,7 @@ public class Graph {
         }
         Collections.reverse(path);
         String joined = String.join(" -> ", path);
-        return String.format("Shortest path from \"%s\" to \"%s\":%n%s%nTotal weight: %d",
+        return String.format("Shortest path from \"%s\" to \"%s\":\n%s\nTotal weight: %d",
                 start, end, joined, dist.get(end));
     }
 

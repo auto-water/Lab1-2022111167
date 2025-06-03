@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-class GraphTest {
+class BlackBoxTest {
 
   private Graph createTestGraphFromFile(String filename) {
     Graph graph = new Graph();
